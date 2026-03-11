@@ -1,5 +1,1 @@
-{
-    "chatgpt.com": {
-        "url": "https://chatgpt.com"
-    }
-}
+{"chatgpt.com": {"url": "https://chatgpt.com"}}
