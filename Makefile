@@ -13,9 +13,9 @@ endef
 deps:
 	python3 -m venv .venv
 	$(call python_venv,python3 -m pip install -r requirements.txt)
+	$(call python_venv,playwright install chromium)
 
 deps-upgrade:
-	python3 -m venv .venv
 	$(call python_venv,python3 -m pip install --upgrade pip setuptools)
 	$(call python_venv,python3 -m pip install -r requirements-dev.txt)
 	$(call python_venv,pip-compile --upgrade)

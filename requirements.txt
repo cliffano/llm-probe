@@ -14,6 +14,8 @@ conflog==2.1.0
     # via -r requirements.in
 dill==0.4.1
     # via pylint
+greenlet==3.3.2
+    # via playwright
 isort==8.0.1
     # via pylint
 mccabe==0.7.0
@@ -28,6 +30,10 @@ platformdirs==4.9.4
     # via
     #   black
     #   pylint
+playwright==1.58.0
+    # via -r requirements.in
+pyee==13.0.1
+    # via playwright
 pylint==4.0.5
     # via -r requirements.in
 pytokens==0.4.1
@@ -38,3 +44,5 @@ toml==0.10.2
     # via conflog
 tomlkit==0.14.0
     # via pylint
+typing-extensions==4.15.0
+    # via pyee
