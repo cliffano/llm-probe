@@ -1,0 +1,10 @@
+{
+    "chatgpt.com": {
+        "url": "https://chatgpt.com",
+        "type": "anonymous"
+    },
+    "duck.ai": {
+        "url": "https://duck.ai",
+        "type": "anonymous"
+    }
+}
