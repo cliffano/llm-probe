@@ -1,4 +1,5 @@
 black
 conflog
 pylint
+pylint-report
 playwright
