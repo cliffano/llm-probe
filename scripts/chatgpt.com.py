@@ -63,10 +63,42 @@ def main() -> None:
             page.click('[data-testid="send-button"]')
             logger.info("Prompt sent. Waiting for response...")
 
-            time.sleep(20)  # Wait for LLM to stream response
+            # Wait deterministically for the assistant response instead of a fixed sleep.
+            locators = page.locator('[data-message-author-role="assistant"]')
+            start_time = time.time()
+            timeout_seconds = 60.0
+            stability_seconds = 1.5
+            last_text = None
+            last_change_time = None
+
+            while True:
+                elapsed = time.time() - start_time
+                if elapsed > timeout_seconds:
+                    logger.warning("Timed out waiting for assistant response.")
+                    break
+
+                count = locators.count()
+                if count == 0:
+                    # No assistant messages yet; wait briefly and retry.
+                    time.sleep(0.5)
+                    continue
+
+                current_text = locators.nth(count - 1).inner_text()
+                now = time.time()
+
+                if last_text is None or current_text != last_text:
+                    # Response is still changing; update tracking.
+                    last_text = current_text
+                    last_change_time = now
+                else:
+                    # Text has not changed since last check; see if it has been stable
+                    # for the required stability period.
+                    if last_change_time is not None and (now - last_change_time) >= stability_seconds:
+                        break
+
+                time.sleep(0.5)
 
             # Attempt to extract response
-            locators = page.locator('[data-message-author-role="assistant"]')
             if locators.count() > 0:
                 latest_response = locators.last.inner_text()
                 logger.info("Received response.")
