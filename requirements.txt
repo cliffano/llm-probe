@@ -4,9 +4,11 @@
 #
 #    pip-compile
 #
+argcomplete==3.6.3
+    # via pylint-report
 astroid==4.0.4
     # via pylint
-black==26.3.0
+black==26.3.1
     # via -r requirements.in
 click==8.3.1
     # via black
@@ -18,12 +20,20 @@ greenlet==3.3.2
     # via playwright
 isort==8.0.1
     # via pylint
+jinja2==3.1.6
+    # via pylint-report
+markupsafe==3.0.3
+    # via jinja2
 mccabe==0.7.0
     # via pylint
 mypy-extensions==1.1.0
     # via black
+numpy==2.4.3
+    # via pandas
 packaging==26.0
     # via black
+pandas==3.0.1
+    # via pylint-report
 pathspec==1.0.4
     # via black
 platformdirs==4.9.4
@@ -35,11 +45,19 @@ playwright==1.58.0
 pyee==13.0.1
     # via playwright
 pylint==4.0.5
+    # via
+    #   -r requirements.in
+    #   pylint-report
+pylint-report==2.4.2
     # via -r requirements.in
+python-dateutil==2.9.0.post0
+    # via pandas
 pytokens==0.4.1
     # via black
 pyyaml==6.0.3
     # via conflog
+six==1.17.0
+    # via python-dateutil
 toml==0.10.2
     # via conflog
 tomlkit==0.14.0
