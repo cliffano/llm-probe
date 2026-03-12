@@ -3,7 +3,6 @@ Script to interact with chatgpt.com using Playwright.
 """
 
 import json
-import logging
 import os
 import sys
 import time
