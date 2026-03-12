@@ -44,18 +44,18 @@ def main() -> None:
         context = browser.new_context()
         page = context.new_page()
 
-        logger.info("Navigating to %s", url)
-        try:
-            page.goto(url, wait_until="load")
-        except Exception as error:  # pylint: disable=broad-except
-            logger.error("Failed to navigate: %s", error)
-            sys.exit(1)
-
-        logger.info("Waiting for prompt textarea...")
-        textarea_selector = "#prompt-textarea"
-
         latest_response = "{}"
         try:
+            logger.info("Navigating to %s", url)
+            try:
+                page.goto(url, wait_until="load")
+            except Exception as error:  # pylint: disable=broad-except
+                logger.error("Failed to navigate: %s", error)
+                sys.exit(1)
+
+            logger.info("Waiting for prompt textarea...")
+            textarea_selector = "#prompt-textarea"
+
             page.wait_for_selector(textarea_selector, timeout=15000)
             page.fill(textarea_selector, prompt)
 
@@ -92,7 +92,10 @@ def main() -> None:
                 else:
                     # Text has not changed since last check; see if it has been stable
                     # for the required stability period.
-                    if last_change_time is not None and (now - last_change_time) >= stability_seconds:
+                    if (
+                        last_change_time is not None
+                        and (now - last_change_time) >= stability_seconds
+                    ):
                         break
 
                 time.sleep(0.5)
@@ -122,7 +125,9 @@ def main() -> None:
         try:
             parsed_json = json.loads(clean_response)
         except json.JSONDecodeError:
-            logger.error("Failed to parse response as JSON. Saving raw response anyway.")
+            logger.error(
+                "Failed to parse response as JSON. Saving raw response anyway."
+            )
             parsed_json = {"raw_response": clean_response}
 
         data_path = os.path.join(base_dir, "data", "chatgpt.com.json")
