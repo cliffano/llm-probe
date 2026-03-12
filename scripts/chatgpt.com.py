@@ -67,9 +67,8 @@ def main() -> None:
 
             # Attempt to extract response
             locators = page.locator('[data-message-author-role="assistant"]')
-            responses = locators.all_inner_texts()
-            if responses:
-                latest_response = responses[-1]
+            if locators.count() > 0:
+                latest_response = locators.last.inner_text()
                 logger.info("Received response.")
             else:
                 logger.warning("No response found, returning empty JSON.")
