@@ -16,6 +16,8 @@ conflog==2.1.0
     # via -r requirements.in
 dill==0.4.1
     # via pylint
+dominate==2.9.1
+    # via pandasreporter
 greenlet==3.3.2
     # via playwright
 isort==8.0.1
@@ -33,7 +35,11 @@ numpy==2.4.3
 packaging==26.0
     # via black
 pandas==3.0.1
-    # via pylint-report
+    # via
+    #   -r requirements.in
+    #   pylint-report
+pandasreporter==1.0.0
+    # via -r requirements.in
 pathspec==1.0.4
     # via black
 platformdirs==4.9.4
@@ -55,9 +61,13 @@ python-dateutil==2.9.0.post0
 pytokens==0.4.1
     # via black
 pyyaml==6.0.3
-    # via conflog
+    # via
+    #   conflog
+    #   pandasreporter
 six==1.17.0
     # via python-dateutil
+tabulate==0.9.0
+    # via pandasreporter
 toml==0.10.2
     # via conflog
 tomlkit==0.14.0

@@ -1,5 +1,7 @@
 black
 conflog
+pandas
+pandasreporter
 pylint
 pylint-report
 playwright
