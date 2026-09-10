@@ -19,4 +19,4 @@ jobs:
         with:
           message: 'Upgrade dependencies to latest versions'
           push_changes: 'true'
-          token: ${{ secrets.STUDIO_GITHUB_TOKEN }}
+          github_token: ${{ secrets.STUDIO_GITHUB_TOKEN }}
