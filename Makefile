@@ -23,6 +23,9 @@ deps-upgrade:
 	$(call python_venv,python3 -m pip install -r requirements-dev.txt)
 	$(call python_venv,pip-compile --upgrade)
 
+deps-extra-apt:
+	apt-get install -y markdownlint
+
 style:
 	$(call python_venv,black scripts)
 
@@ -38,4 +41,4 @@ build: stage
 	$(call python_venv,python3 scripts/probe.py)
 	$(call python_venv,python3 scripts/gen_report.py)
 
-.PHONY: ci clean stage deps deps-upgrade style lint build
+.PHONY: ci clean stage deps deps-upgrade deps-extra-apt style lint build
