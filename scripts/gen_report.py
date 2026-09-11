@@ -133,7 +133,7 @@ def main() -> None:
         len(df_report.columns),
     )
 
-    output_path = args.stage_dir / "gh-pages" / "llm-probe-report.html"
+    output_path = args.stage_dir / "gh-pages" / "report.html"
     if not write_report(df_report, output_path):
         LOGGER.error("pandasreporter did not generate a non-empty report")
         return
