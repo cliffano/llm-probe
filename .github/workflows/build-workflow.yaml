@@ -1,0 +1,32 @@
+---
+name: Build
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          set-safe-directory: ${{ github.workspace }}
+      - uses: iamsauravsharma/create-dotenv@v2.0.1
+        with:
+          file-path: '/tmp/.env'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.STUDIO_OPENROUTER_KEY }}
+      - uses: cliffano/command-docker-action@v2.1.0
+        with:
+          image: cliffano/studio:3.8.0
+          command: 'make deps build'
+          env_file: '/tmp/.env'
+      - uses: cliffano/save-changes-action@main
+        with:
+          message: 'Update probe data'
+          push_changes: 'true'
+          github_token: ${{ secrets.STUDIO_GITHUB_TOKEN }}
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.STUDIO_GITHUB_TOKEN }}
+          publish_dir: stage/gh-pages
