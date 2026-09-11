@@ -23,6 +23,12 @@ def load_providers(config_path: Path) -> list[str]:
 
     Provider entries may be a plain ID string, or an object with an "id"
     key (used when the provider also carries a "config" block).
+
+    :param config_path: Path to the Promptfoo YAML config.
+    :type config_path: Path
+    :return: Provider IDs, in config file order.
+    :rtype: list[str]
+    :raises yaml.YAMLError: If the config file is not valid YAML.
     """
     with config_path.open("r", encoding="utf-8") as file:
         config = yaml.safe_load(file)
@@ -37,13 +43,27 @@ def load_providers(config_path: Path) -> list[str]:
 
 
 def normalize_model_name(provider: str) -> str:
-    """Normalise an OpenRouter provider ID into a filesystem-safe model name."""
+    """Normalise an OpenRouter provider ID into a filesystem-safe model name.
+
+    :param provider: Provider ID, e.g. ``"openrouter:openai/gpt-oss-20b:free"``.
+    :type provider: str
+    :return: Filesystem-safe model name, used as the data/stage file stem.
+    :rtype: str
+    """
     model = provider.removeprefix("openrouter:")
     return re.sub(r"[^A-Za-z0-9._-]+", "-", model).strip("-")
 
 
 def parse_response(raw_response: str) -> dict[str, Any]:
-    """Parse a JSON response, retaining non-JSON output for investigation."""
+    """Parse a JSON response, retaining non-JSON output for investigation.
+
+    :param raw_response: Raw text returned by the provider, optionally
+        wrapped in a Markdown code fence.
+    :type raw_response: str
+    :return: The parsed JSON object, or ``{"raw_response": ...}`` when the
+        response is not a JSON object.
+    :rtype: dict[str, Any]
+    """
     clean_response = raw_response.strip()
     fenced_match = re.fullmatch(
         r"```(?:json)?\s*(.*?)\s*```", clean_response, flags=re.DOTALL | re.IGNORECASE
@@ -62,7 +82,13 @@ def parse_response(raw_response: str) -> dict[str, Any]:
 
 
 def result_rows(payload: dict[str, Any]) -> Iterator[dict[str, Any]]:
-    """Yield result rows from supported Promptfoo JSON output versions."""
+    """Yield result rows from supported Promptfoo JSON output versions.
+
+    :param payload: Parsed Promptfoo ``--output`` JSON.
+    :type payload: dict[str, Any]
+    :return: Iterator over the row dicts under ``results``.
+    :rtype: Iterator[dict[str, Any]]
+    """
     results = payload.get("results", {})
     if isinstance(results, list):
         yield from (row for row in results if isinstance(row, dict))
@@ -79,7 +105,13 @@ def result_rows(payload: dict[str, Any]) -> Iterator[dict[str, Any]]:
 
 
 def response_text(row: dict[str, Any]) -> str | None:
-    """Extract text returned by a provider from a Promptfoo result row."""
+    """Extract text returned by a provider from a Promptfoo result row.
+
+    :param row: A single Promptfoo result row.
+    :type row: dict[str, Any]
+    :return: The provider's output text, or ``None`` if absent.
+    :rtype: str | None
+    """
     response = row.get("response")
     if isinstance(response, dict):
         output = response.get("output")
@@ -93,7 +125,13 @@ def response_text(row: dict[str, Any]) -> str | None:
 
 
 def response_error(row: dict[str, Any]) -> str | None:
-    """Extract an error message from a Promptfoo result row, if any."""
+    """Extract an error message from a Promptfoo result row, if any.
+
+    :param row: A single Promptfoo result row.
+    :type row: dict[str, Any]
+    :return: The error message, or ``None`` if the row has no error.
+    :rtype: str | None
+    """
     response = row.get("response")
     if isinstance(response, dict) and isinstance(response.get("error"), str):
         return response["error"]
@@ -108,6 +146,15 @@ def run_eval(provider: str, config_path: Path, output_path: Path) -> None:
     Promptfoo exits non-zero whenever a test errors (e.g. a provider API
     error), even though it still writes a usable output file, so the
     exit code is deliberately not checked here.
+
+    :param provider: Provider ID to scope the eval to.
+    :type provider: str
+    :param config_path: Path to the Promptfoo YAML config.
+    :type config_path: Path
+    :param output_path: Path Promptfoo should write its JSON output to.
+    :type output_path: Path
+    :return: None
+    :rtype: None
     """
     subprocess.run(
         [
@@ -129,7 +176,19 @@ def run_eval(provider: str, config_path: Path, output_path: Path) -> None:
 def probe_provider(
     provider: str, config_path: Path, data_dir: Path, stage_dir: Path
 ) -> bool:
-    """Probe a single provider and write its response to the data directory."""
+    """Probe a single provider and write its response to the data directory.
+
+    :param provider: Provider ID to probe.
+    :type provider: str
+    :param config_path: Path to the Promptfoo YAML config.
+    :type config_path: Path
+    :param data_dir: Directory the parsed JSON response is written to.
+    :type data_dir: Path
+    :param stage_dir: Directory the raw Promptfoo eval output is written to.
+    :type stage_dir: Path
+    :return: ``True`` if a response was parsed and written, ``False`` otherwise.
+    :rtype: bool
+    """
     model_name = normalize_model_name(provider)
     output_path = stage_dir / f"{model_name}.json"
     run_eval(provider, config_path, output_path)
@@ -158,7 +217,15 @@ def probe_provider(
 
 
 def main() -> None:
-    """Probe every configured provider and export one JSON file per model."""
+    """Probe every configured provider and export one JSON file per model.
+
+    Reads ``--config``, ``--data-dir``, ``--stage-dir`` and ``--delay`` from
+    the command line (see module docstring for defaults).
+
+    :return: None
+    :rtype: None
+    :raises SystemExit: If no provider could be probed successfully.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--config", type=Path, default=ROOT_DIR / "config" / "promptfoo.yaml"
