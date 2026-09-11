@@ -1,4 +1,4 @@
-"""Collate the per-model JSON files under data/ into an HTML report under stage/."""
+"""Collate the per-model JSON files under data/ into an HTML report under stage/gh-pages/."""
 
 import argparse
 import json
@@ -133,7 +133,7 @@ def main() -> None:
         len(df_report.columns),
     )
 
-    output_path = args.stage_dir / "llm-probe-report.html"
+    output_path = args.stage_dir / "gh-pages" / "llm-probe-report.html"
     if not write_report(df_report, output_path):
         LOGGER.error("pandasreporter did not generate a non-empty report")
         return
