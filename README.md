@@ -1,29 +1,33 @@
-# llm-probe
+# LLM-Probe
 
-Run [`prompt.txt`](prompt.txt) against the free models configured in
-[`config/promptfoo.yaml`](config/promptfoo.yaml) through OpenRouter.
-Successful JSON responses are exported to one `data/openrouter.*.json` file per
-model for use by the existing pandas report generator.
+Probe LLMs via a [prompt](prompt.txt) containing queries for the models' runtime characteristics. The models used are provided by OpenRouter.
 
 ## Setup
 
-Create an OpenRouter API key, export it, and install the dependencies:
+Create an [OpenRouter API key](https://openrouter.ai/docs/api_reference/authentication).
 
-```sh
-export OPENROUTER_API_KEY="..."
+Install dependencies:
+
+```shell
 make deps
 ```
 
-## Run
+## Usage
 
-```sh
-make build
+Run the probe and generate report, with OpenRouter API key passed as environment variable:
+
+```shell
+OPENROUTER_API_KEY="..." make build
 ```
 
-Each configured provider is probed individually via `promptfoo eval`.
+Each configured model is probed individually via `promptfoo eval`.
 Promptfoo's raw result for each provider, including errors and token
 metadata, is saved to `stage/<model>.json`; the successful response body is
 exported to `data/<model>.json`.
 
 OpenRouter changes its free catalog over time. Update the explicit `providers`
-list in `config/promptfoo.yaml` when you want to change the probe set.
+list in `config/promptfoo.yaml` accordingly .
+
+## Colophon
+
+* [Report](https://cliffano.github.io/llm-probe/report.html)

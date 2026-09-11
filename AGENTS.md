@@ -1,3 +1,5 @@
+# AGENTS.md
+
 ## Development Environment
 
 This project is designed to be developed in a consistent environment via Docker image `cliffano/studio`.

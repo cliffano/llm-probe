@@ -1,4 +1,4 @@
-ci: clean stage deps style lint
+ci: clean stage style lint
 
 clean:
 	rm -rf stage/
@@ -35,6 +35,7 @@ lint: stage
 	$(call python_venv,pylint $(shell find scripts -type f -regex ".*\.py" | xargs echo))
 	$(call python_venv,pylint $(shell find scripts -type f -regex ".*\.py" | xargs echo) --output-format=pylint_report.CustomJsonReporter > stage/gh-pages/lint/pylint/report.json)
 	$(call python_venv,pylint_report stage/gh-pages/lint/pylint/report.json -o stage/gh-pages/lint/pylint/index.html)
+	mdl -r ~MD013,~MD029 $(shell find . -path ./stage -prune -o -path ./.venv -prune -o -name "CHANGELOG.md" -prune -o -name "*.md" -print)
 
 build: stage
 	test -n "$$OPENROUTER_API_KEY"
